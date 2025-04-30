@@ -122,5 +122,38 @@
             <p>&copy; {% now "Y" %} The Daily Attack. All rights reserved.</p>
         </div>
     </footer>
+    <!-- Add this just before the closing </body> tag -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if we need to redirect to LinkedIn
+            if (localStorage.getItem('shareToLinkedIn') === 'true') {
+                // Clear the flag
+                localStorage.removeItem('shareToLinkedIn');
+                
+                // Get the content
+                const content = localStorage.getItem('linkedinPostContent');
+                
+                if (content) {
+                    // Try to copy the content to clipboard
+                    try {
+                        navigator.clipboard.writeText(content).then(function() {
+                            console.log('Content copied to clipboard');
+                            // Show a message to the user and open LinkedIn when they click OK
+                            alert('Content has been copied to your clipboard. LinkedIn article page will open next. Just paste the content there.');
+                            window.open('https://www.linkedin.com/post/new', '_blank');
+                        }).catch(function(err) {
+                            console.error('Could not copy text: ', err);
+                            alert('Could not copy to clipboard. LinkedIn will still open, but you\'ll need to copy the content manually.');
+                            window.open('https://www.linkedin.com/post/new', '_blank');
+                        });
+                    } catch (err) {
+                        console.error('Clipboard API not available: ', err);
+                        alert('Could not copy to clipboard. LinkedIn will still open, but you\'ll need to copy the content manually.');
+                        window.open('https://www.linkedin.com/post/new', '_blank');
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>

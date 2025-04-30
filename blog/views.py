@@ -98,12 +98,25 @@ def post_edit(request, pk):
 def post_publish(request, pk):
     post = get_object_or_404(Post, pk=pk)
     
+    # Check if the user is the author
     if post.author != request.user:
-        messages.error(request, "You don't have permission to publish this post.")
-        return redirect('dashboard')
+        messages.error(request, "You can only publish your own posts.")
+        return redirect('post_detail', pk=post.pk)
     
-    post.publish()
-    return redirect('post_detail', pk=pk)
+    post.status = 'published'
+    post.published_at = timezone.now()
+    post.save()
+    
+    messages.success(request, "Your post has been published!")
+    
+    # Check if the user wants to share to LinkedIn
+    share_to_linkedin = request.GET.get('share_to_linkedin', 'false') == 'true'
+    
+    if share_to_linkedin:
+        # Redirect to LinkedIn post creation page
+        return redirect('https://www.linkedin.com/post/new')
+    
+    return redirect('post_detail', pk=post.pk)
 
 def tag_posts(request, tag_name):
     tag = get_object_or_404(Tag, name=tag_name)

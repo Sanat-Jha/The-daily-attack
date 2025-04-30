@@ -26,7 +26,30 @@
                 {% if post.status == 'draft' %}
                     <a href="{% url 'post_publish' pk=post.pk %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Publish</a>
                 {% endif %}
+                {% if post.status == 'published' %}
+                    <a href="https://www.linkedin.com/post/new" target="_blank" 
+                       onclick="localStorage.setItem('linkedinPostContent', '{{ post.title }}\n\n{{ post.content|striptags|escapejs }}');"
+                       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Share to LinkedIn
+                    </a>
+                {% endif %}
             </div>
         {% endif %}
     </article>
+
+    {% if user.is_authenticated and user.profile.user_type == 'editor' and user == post.author and post.status == 'published' %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Add LinkedIn sharing functionality
+                const linkedinBtn = document.querySelector('a[href="https://www.linkedin.com/post/new"]');
+                if (linkedinBtn) {
+                    linkedinBtn.addEventListener('click', function() {
+                        // This will be executed when the LinkedIn button is clicked
+                        // The content is already set in localStorage via the onclick attribute
+                        // We could add additional functionality here if needed
+                    });
+                }
+            });
+        </script>
+    {% endif %}
 {% endblock %}
