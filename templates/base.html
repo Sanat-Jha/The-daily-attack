@@ -5,6 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}The Daily Attack{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    typography: {},
+                }
+            },
+            plugins: [
+                tailwindTypography = function({ addComponents }) {
+                    addComponents({
+                        '.prose': {
+                            '& h1, & h2, & h3, & h4': {
+                                fontWeight: '600',
+                                marginTop: '1.5em',
+                                marginBottom: '0.5em',
+                            },
+                            '& p': {
+                                marginTop: '1em',
+                                marginBottom: '1em',
+                            },
+                            '& ul, & ol': {
+                                paddingLeft: '1.5em',
+                                marginTop: '1em',
+                                marginBottom: '1em',
+                            },
+                            '& li': {
+                                marginTop: '0.5em',
+                                marginBottom: '0.5em',
+                            },
+                            '& a': {
+                                color: '#3182ce',
+                                textDecoration: 'underline',
+                            },
+                            '& blockquote': {
+                                borderLeftWidth: '4px',
+                                borderLeftColor: '#e2e8f0',
+                                paddingLeft: '1em',
+                                fontStyle: 'italic',
+                            },
+                            '& code': {
+                                backgroundColor: '#f7fafc',
+                                padding: '0.25em',
+                                borderRadius: '0.25em',
+                            },
+                            '& pre': {
+                                backgroundColor: '#f7fafc',
+                                padding: '1em',
+                                borderRadius: '0.5em',
+                                overflowX: 'auto',
+                            },
+                        },
+                        '.prose-sm': {
+                            fontSize: '0.875rem',
+                        },
+                    });
+                },
+            ],
+        }
+    </script>
     <!-- Include TinyMCE for rich text editing -->
     <script src="https://cdn.tiny.cloud/1/ua7hqzodwihwzvrjrzl7yhy9yjaplftm6cjfifsu4fikoilq/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>

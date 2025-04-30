@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import views_api
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -10,7 +11,8 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('tag/<str:tag_name>/', views.tag_posts, name='tag_posts'),
     path('search/', views.search_posts, name='search_posts'),
-    # Add a direct link to create a new post
-    path('create/', views.post_new, name='create_post'),
-    path('check-status/', views.check_user_status, name='check_user_status'),
+    
+    # API endpoints for Gemini integration
+    path('api/title-suggestions/', views_api.api_title_suggestions, name='api_title_suggestions'),
+    path('api/content-suggestions/', views_api.api_content_suggestions, name='api_content_suggestions'),
 ]

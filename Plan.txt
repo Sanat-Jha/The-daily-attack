@@ -7,7 +7,7 @@ V1:
 Just build a basic blog publishing platform with User authentication and user categorised as Viewer or editor and only editor having content writing and editing access. A single post can be written saved in draft or published. Use Rich text for content.Implement a rich text editor (WYSIWYG). Add a option to add tags (list of words) to each post. 
 Use templates (html css tailwindCDN js) for making the frontend.
 
-V2: Integrate Google Gemini api (api key:AIzaSyDLG7ztyXuVWaH-mcm2HrSLHCgJU8arjvg) in frontend so while writing blog post headline and content it suggest content improvisation.
+V2: Integrate Google Gemini api (api key:AIzaSyDLG7ztyXuVWaH-mcm2HrSLHCgJU8arjvg) in frontend so while writing blog post headline and content it suggest content improvisation and title suggestions.
 
 
 V3: Integrate Linked in API for Publishing a post on linked in also while posting on site.
