@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}The Daily Attack{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include TinyMCE for rich text editing -->
+    <script src="https://cdn.tiny.cloud/1/ua7hqzodwihwzvrjrzl7yhy9yjaplftm6cjfifsu4fikoilq/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        tinymce.init({
+          selector: '.richtext-editor',
+          plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+          toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        });
+      });
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <header class="bg-blue-600 text-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="text-2xl font-bold">The Daily Attack</a>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="{% url 'home' %}" class="hover:underline">Home</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
+                        {% if user.profile.user_type == 'editor' %}
+                            <li><a href="{% url 'post_new' %}" class="hover:underline">New Post</a></li>
+                        {% endif %}
+                        <li>
+                            <form method="post" action="{% url 'logout' %}" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="hover:underline bg-transparent border-none p-0 text-white cursor-pointer">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}" class="hover:underline">Login</a></li>
+                        <li><a href="{% url 'signup' %}" class="hover:underline">Sign Up</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="p-4 {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %} rounded">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; {% now "Y" %} The Daily Attack. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
