@@ -16,3 +16,4 @@ V3: Integrate Linked in API for Publishing a post on linked in also while postin
 ● Implement custom messaging and hashtag generation for LinkedIn
 
 
+V4: Make a open api endpoint to access all the blog post and a open API endpoint to access one specific post content and create a api key endpoint for posting the blog post and give one api key to each editor account which will be displayed on their dashboard, create and save the document of this api in API.md

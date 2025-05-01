@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -48,3 +49,22 @@ class UserProfile(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.user_type}"
+
+
+# Add this to your existing models.py file
+
+class APIKey(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='api_key')
+    key = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return f"{self.user.username}'s API Key"
+    
+    def save(self, *args, **kwargs):
+        # Ensure only editors can have API keys
+        if hasattr(self.user, 'profile') and self.user.profile.user_type == 'editor':
+            super().save(*args, **kwargs)
+        else:
+            raise ValueError("Only editors can have API keys")

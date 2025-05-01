@@ -1,12 +1,24 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
-from django.utils import timezone
 from django.contrib import messages
-from django.db.models import Q
-from .models import Post, Tag, UserProfile
-from .forms import SignUpForm, PostForm
-from .decorators import editor_required
+from django.utils import timezone
+from django.http import HttpResponse
+from functools import wraps
+from .models import Post, Tag, APIKey
+import uuid
+
+# Add this decorator function
+def editor_required(view_func):
+    """
+    Decorator for views that checks if the user is an editor.
+    """
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not hasattr(request.user, 'profile') or request.user.profile.user_type != 'editor':
+            messages.error(request, "You must be an editor to access this page.")
+            return redirect('home')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 def home(request):
     posts = Post.objects.filter(status='published')
@@ -37,13 +49,26 @@ def signup(request):
 
 @login_required
 def dashboard(request):
+    if request.method == 'POST' and 'generate_api_key' in request.POST:
+        # Check if user is an editor
+        if hasattr(request.user, 'profile') and request.user.profile.user_type == 'editor':
+            # Create or update API key
+            api_key, created = APIKey.objects.update_or_create(
+                user=request.user,
+                defaults={'key': uuid.uuid4()}
+            )
+            if created:
+                messages.success(request, "API key generated successfully!")
+            else:
+                messages.success(request, "API key regenerated successfully!")
+            return redirect('dashboard')
+    
     if hasattr(request.user, 'profile') and request.user.profile.user_type == 'editor':
-        # For editors, show all their posts (both published and drafts)
-        posts = Post.objects.filter(author=request.user).order_by('-created_at')
+        user_posts = Post.objects.filter(author=request.user).order_by('-created_at')
+        return render(request, 'blog/dashboard.html', {'user_posts': user_posts})
     else:
-        # For viewers, only show published posts
-        posts = Post.objects.filter(status='published')
-    return render(request, 'blog/dashboard.html', {'posts': posts})
+        recent_posts = Post.objects.filter(status='published').order_by('-published_at')[:10]
+        return render(request, 'blog/dashboard.html', {'recent_posts': recent_posts})
 
 @login_required
 @editor_required
@@ -150,3 +175,7 @@ def check_user_status(request):
         messages.info(request, f"Your account already has editor status. Username: {request.user.username}, User type: {request.user.profile.user_type}")
     
     return redirect('dashboard')
+
+@login_required
+def api_docs(request):
+    return render(request, 'blog/api_docs.html')

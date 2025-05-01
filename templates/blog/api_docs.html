@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}API Documentation - The Daily Attack{% endblock %}
+
+{% block content %}
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <h1 class="text-2xl font-bold mb-6">API Documentation</h1>
+        
+        <div class="prose max-w-none">
+            <h2>Introduction</h2>
+            <p>
+                The Daily Attack API provides programmatic access to blog posts and allows authorized users to create new posts.
+                This documentation describes the available endpoints and how to use them.
+            </p>
+            
+            <h2>Authentication</h2>
+            <p>
+                Some endpoints require authentication using an API key. To authenticate, include your API key in the request headers:
+            </p>
+            <pre class="bg-gray-100 p-3 rounded"><code>X-API-Key: your-api-key</code></pre>
+            
+            <h2>Endpoints</h2>
+            
+            <h3>List All Posts</h3>
+            <p><strong>URL:</strong> <code>/api/posts/</code></p>
+            <p><strong>Method:</strong> GET</p>
+            <p><strong>Authentication:</strong> None (public endpoint)</p>
+            <p><strong>Description:</strong> Returns a list of all published posts.</p>
+            <p><strong>Example Response:</strong></p>
+            <pre class="bg-gray-100 p-3 rounded"><code>[
+  {
+    "id": 1,
+    "title": "Sample Post",
+    "content": "This is a sample post content.",
+    "status": "published",
+    "created_at": "2023-06-01T12:00:00Z",
+    "published_at": "2023-06-01T14:00:00Z",
+    "author": "username",
+    "tags": [
+      {"name": "sample"},
+      {"name": "example"}
+    ]
+  }
+]</code></pre>
+            
+            <h3>Get a Specific Post</h3>
+            <p><strong>URL:</strong> <code>/api/posts/{id}/</code></p>
+            <p><strong>Method:</strong> GET</p>
+            <p><strong>Authentication:</strong> None (public endpoint)</p>
+            <p><strong>Description:</strong> Returns details of a specific published post.</p>
+            <p><strong>Example Response:</strong></p>
+            <pre class="bg-gray-100 p-3 rounded"><code>{
+  "id": 1,
+  "title": "Sample Post",
+  "content": "This is a sample post content.",
+  "status": "published",
+  "created_at": "2023-06-01T12:00:00Z",
+  "published_at": "2023-06-01T14:00:00Z",
+  "author": "username",
+  "tags": [
+    {"name": "sample"},
+    {"name": "example"}
+  ]
+}</code></pre>
+            
+            <h3>Create a New Post</h3>
+            <p><strong>URL:</strong> <code>/api/posts/create/</code></p>
+            <p><strong>Method:</strong> POST</p>
+            <p><strong>Authentication:</strong> Required (API Key)</p>
+            <p><strong>Description:</strong> Creates a new blog post.</p>
+            <p><strong>Request Body:</strong></p>
+            <pre class="bg-gray-100 p-3 rounded"><code>{
+  "title": "New Post Title",
+  "content": "Content of the new post",
+  "status": "draft", // or "published"
+  "tags": ["tag1", "tag2"]
+}</code></pre>
+            <p><strong>Example Response:</strong></p>
+            <pre class="bg-gray-100 p-3 rounded"><code>{
+  "id": 2,
+  "title": "New Post Title",
+  "content": "Content of the new post",
+  "status": "draft",
+  "created_at": "2023-06-02T10:00:00Z",
+  "published_at": null,
+  "author": "username",
+  "tags": [
+    {"name": "tag1"},
+    {"name": "tag2"}
+  ]
+}</code></pre>
+            
+            <h2>Error Handling</h2>
+            <p>
+                The API uses standard HTTP status codes to indicate the success or failure of a request:
+            </p>
+            <ul>
+                <li><strong>200 OK:</strong> The request was successful.</li>
+                <li><strong>201 Created:</strong> The resource was successfully created.</li>
+                <li><strong>400 Bad Request:</strong> The request was invalid or cannot be served.</li>
+                <li><strong>401 Unauthorized:</strong> Authentication is required or failed.</li>
+                <li><strong>404 Not Found:</strong> The requested resource does not exist.</li>
+                <li><strong>500 Internal Server Error:</strong> An error occurred on the server.</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
