@@ -37,13 +37,15 @@ def post_detail(request, pk):
         return redirect('home')
     return render(request, 'blog/post_detail.html', {'post': post})
 
+# In your signup view
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             # Create a UserProfile with viewer type by default
-            UserProfile.objects.create(user=user, user_type='viewer')
+            # Only create if it doesn't exist
+            UserProfile.objects.get_or_create(user=user, defaults={'user_type': 'viewer'})
             login(request, user)
             return redirect('home')
     else:
@@ -197,3 +199,13 @@ def check_user_status(request):
 @login_required
 def api_docs(request):
     return render(request, 'blog/api_docs.html')
+
+# In your signup view or signal handler
+def create_profile(user):
+    try:
+        # Check if profile exists
+        profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        # Create only if it doesn't exist
+        profile = UserProfile.objects.create(user=user)
+    return profile
