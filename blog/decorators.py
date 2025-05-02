@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import user_passes_test
+# Remove: from django.contrib.auth.decorators import user_passes_test (not used)
 from django.shortcuts import redirect
 from django.contrib import messages
 
