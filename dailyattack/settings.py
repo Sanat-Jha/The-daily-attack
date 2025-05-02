@@ -126,10 +126,8 @@ USE_TZ = True
 
 # Add at the end of the file
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Add this import at the top of the file
 import os

@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from blog import views as blog_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin', admin.site.urls),
     path('', include('blog.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/signup/', blog_views.signup, name='signup'),
