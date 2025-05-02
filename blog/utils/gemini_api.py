@@ -1,8 +1,13 @@
 import google.generativeai as genai
 import os
+from dotenv import load_dotenv
 
-# Configure the Gemini API with your API key
-genai.configure(api_key="AIzaSyDLG7ztyXuVWaH-mcm2HrSLHCgJU8arjvg")
+# Load environment variables from .env file
+load_dotenv()
+
+# Configure the Gemini API with your API key from environment variable
+gemini_api_key = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=gemini_api_key)
 
 def get_content_suggestions(content):
     """
@@ -26,7 +31,6 @@ def get_content_suggestions(content):
         return f"Error getting content suggestions: {str(e)}"
 
 def get_title_suggestions(content):
-    print(list_available_models())
     """
     Generate title suggestions based on the content
     """
