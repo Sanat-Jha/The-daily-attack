@@ -6,7 +6,7 @@ import markdown
 from .utils.gemini_api import get_content_suggestions, get_title_suggestions
 from django.contrib.auth.decorators import login_required
 
-@login_required
+# @login_required   
 @csrf_protect
 @require_POST
 def api_title_suggestions(request):

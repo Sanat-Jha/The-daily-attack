@@ -10,7 +10,7 @@ def get_content_suggestions(content):
     """
     try:
         # Use the correct model name
-        model = genai.GenerativeModel('gemini-1.5-pro-002')
+        model = genai.GenerativeModel('gemini-2.0-flash-lite-preview')
         prompt = f"""
         Please analyze the following blog post content and provide 3-5 specific suggestions 
         to improve it. Focus on clarity, engagement, and readability:
@@ -26,12 +26,13 @@ def get_content_suggestions(content):
         return f"Error getting content suggestions: {str(e)}"
 
 def get_title_suggestions(content):
+    print(list_available_models())
     """
     Generate title suggestions based on the content
     """
     try:
         # Use the correct model name
-        model = genai.GenerativeModel('gemini-1.5-pro-002')
+        model = genai.GenerativeModel('gemini-2.0-flash-lite-preview')
         prompt = f"""
         Based on the following blog post content, suggest 5 engaging and SEO-friendly title options:
         
