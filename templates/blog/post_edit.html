@@ -3,57 +3,72 @@
 {% block title %}{% if form.instance.pk %}Edit Post{% else %}New Post{% endif %} - The Daily Attack{% endblock %}
 
 {% block content %}
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <h1 class="text-2xl font-bold mb-6">{% if form.instance.pk %}Edit Post{% else %}New Post{% endif %}</h1>
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 animate-fade-in">
+        <h1 class="text-2xl font-bold mb-8 text-primary-dark">
+            {% if form.instance.pk %}
+                <span class="flex items-center"><span class="mr-2">✏️</span> Edit Post</span>
+            {% else %}
+                <span class="flex items-center"><span class="mr-2">✨</span> New Post</span>
+            {% endif %}
+        </h1>
         
-        <form method="post" class="space-y-4" id="post-form">
+        <form method="post" class="space-y-6" id="post-form">
             {% csrf_token %}
             
             {% if form.errors %}
-                <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
+                <div class="bg-red-100 text-red-700 p-4 rounded-lg border-l-4 border-red-500 animate__animated animate__fadeIn">
                     Please correct the errors below.
                 </div>
             {% endif %}
             
-            <div>
-                <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <div class="animate-slide-in" style="animation-delay: 100ms">
+                <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
                 {{ form.title.errors }}
-                <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" value="{{ form.title.value|default:'' }}" class="w-full px-3 py-2 border rounded" required>
+                <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" value="{{ form.title.value|default:'' }}" 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300" required>
             </div>
             
-            <div>
-                <label for="{{ form.content.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+            <div class="animate-slide-in" style="animation-delay: 200ms">
+                <label for="{{ form.content.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Content</label>
                 {{ form.content.errors }}
-                <textarea name="{{ form.content.name }}" id="{{ form.content.id_for_label }}" class="richtext-editor w-full px-3 py-2 border rounded" rows="10">{{ form.content.value|default:'' }}</textarea>
+                <textarea name="{{ form.content.name }}" id="{{ form.content.id_for_label }}" class="richtext-editor w-full px-4 py-3 border border-gray-300 rounded-lg" rows="12">{{ form.content.value|default:'' }}</textarea>
             </div>
             
-            <div>
-                <label for="{{ form.status.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <div class="animate-slide-in" style="animation-delay: 300ms">
+                <label for="{{ form.status.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
                 {{ form.status.errors }}
-                <select name="{{ form.status.name }}" id="{{ form.status.id_for_label }}" class="w-full px-3 py-2 border rounded">
+                <select name="{{ form.status.name }}" id="{{ form.status.id_for_label }}" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300">
                     {% for value, text in form.status.field.choices %}
                         <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>{{ text }}</option>
                     {% endfor %}
                 </select>
             </div>
             
-            <div>
-                <label for="{{ form.tags.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+            <div class="animate-slide-in" style="animation-delay: 400ms">
+                <label for="{{ form.tags.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Tags</label>
                 {{ form.tags.errors }}
-                <input type="text" name="{{ form.tags.name }}" id="{{ form.tags.id_for_label }}" value="{{ form.tags.value|default:'' }}" class="w-full px-3 py-2 border rounded" placeholder="Enter tags separated by commas">
-                <p class="text-sm text-gray-500 mt-1">{{ form.tags.help_text }}</p>
+                <input type="text" name="{{ form.tags.name }}" id="{{ form.tags.id_for_label }}" value="{{ form.tags.value|default:'' }}" 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300" 
+                       placeholder="Enter tags separated by commas">
+                <p class="text-sm text-gray-500 mt-2">{{ form.tags.help_text }}</p>
             </div>
             
-            <div class="flex items-center">
-                <input type="checkbox" id="share-to-linkedin" name="share_to_linkedin" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
-                <label for="share-to-linkedin" class="ml-2 block text-sm text-gray-700">
+            <div class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200 animate-slide-in" style="animation-delay: 500ms">
+                <input type="checkbox" id="share-to-linkedin" name="share_to_linkedin" 
+                       class="h-5 w-5 text-primary border-gray-300 rounded focus:ring-primary">
+                <label for="share-to-linkedin" class="ml-3 block text-sm text-gray-700">
                     Share to LinkedIn after publishing
                 </label>
             </div>
             
-            <div>
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>
-                <a href="{% url 'dashboard' %}" class="ml-2 px-4 py-2 border border-gray-300 rounded hover:bg-gray-100">Cancel</a>
+            <div class="pt-4 animate-slide-in" style="animation-delay: 600ms">
+                <button type="submit" class="bg-gradient-to-r from-primary to-accent text-white px-6 py-3 rounded-full hover:opacity-90 transition-all duration-300 shadow-md">
+                    Save
+                </button>
+                <a href="{% url 'dashboard' %}" class="ml-3 px-6 py-3 border border-gray-300 rounded-full hover:bg-gray-100 transition-all duration-300">
+                    Cancel
+                </a>
             </div>
         </form>
     </div>

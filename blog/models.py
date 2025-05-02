@@ -38,17 +38,17 @@ class Post(models.Model):
 
 # Add this to the existing models.py file
 
+# Add the UserProfile model here
 class UserProfile(models.Model):
     USER_TYPES = (
         ('viewer', 'Viewer'),
         ('editor', 'Editor'),
     )
-    
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='viewer')
     
     def __str__(self):
-        return f"{self.user.username} - {self.user_type}"
+        return f"{self.user.username}'s profile"
 
 
 # Add this to your existing models.py file

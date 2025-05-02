@@ -3,8 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.http import HttpResponse
+from django.db.models import Q
+from django.contrib.auth import login
 from functools import wraps
-from .models import Post, Tag, APIKey
+from .models import Post, Tag, APIKey, UserProfile  # Import UserProfile from blog.models
+from .forms import PostForm, SignUpForm
 import uuid
 
 # Add this decorator function
@@ -109,7 +112,22 @@ def post_edit(request, pk):
             if post.status == 'published' and not post.published_at:
                 post.published_at = timezone.now()
             post.save()
-            form.save_m2m()
+            
+            # Clear existing tags and add new ones
+            post.tags.clear()
+            tag_names = form.cleaned_data.get('tags', [])
+            
+            # Handle both list and string formats for tags
+            if isinstance(tag_names, str):
+                tag_names = tag_names.split(',')
+            
+            for tag_name in tag_names:
+                if isinstance(tag_name, str):
+                    tag_name = tag_name.strip()
+                    if tag_name:
+                        tag, created = Tag.objects.get_or_create(name=tag_name)
+                        post.tags.add(tag)
+            
             return redirect('post_detail', pk=post.pk)
     else:
         # Prepare tags for the form

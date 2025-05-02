@@ -5,12 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}The Daily Attack{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add Animation Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    colors: {
+                        primary: {
+                            light: '#4da8ff',
+                            DEFAULT: '#1a73e8',
+                            dark: '#0d47a1',
+                        },
+                        secondary: {
+                            light: '#ff7961',
+                            DEFAULT: '#f44336',
+                            dark: '#ba000d',
+                        },
+                        accent: {
+                            light: '#b388ff',
+                            DEFAULT: '#7c4dff',
+                            dark: '#4a148c',
+                        },
+                    },
                     typography: {},
-                }
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-in': 'slideIn 0.5s ease-in-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateY(-10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'header-gradient': 'linear-gradient(to right, #1a73e8, #7c4dff)',
+                        'footer-gradient': 'linear-gradient(to right, #0d47a1, #4a148c)',
+                    },
+                },
             },
             plugins: [
                 tailwindTypography = function({ addComponents }) {
@@ -75,39 +114,68 @@
         });
       });
     </script>
+    <style>
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <header class="bg-blue-600 text-white shadow-md">
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <header class="bg-header-gradient text-white shadow-lg animate-fade-in">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="{% url 'home' %}" class="text-2xl font-bold">The Daily Attack</a>
+            <a href="{% url 'home' %}" class="text-2xl font-bold flex items-center">
+                <span class="mr-2">📰</span>
+                <span class="animate-pulse-slow">The Daily Attack</span>
+            </a>
             <nav>
-                <ul class="flex space-x-4">
-                    <li><a href="{% url 'home' %}" class="hover:underline">Home</a></li>
+                <ul class="flex space-x-6">
+                    <li><a href="{% url 'home' %}" class="nav-link hover:text-white font-medium">Home</a></li>
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
+                        <li><a href="{% url 'dashboard' %}" class="nav-link hover:text-white font-medium">Dashboard</a></li>
                         {% if user.profile.user_type == 'editor' %}
-                            <li><a href="{% url 'post_new' %}" class="hover:underline">New Post</a></li>
+                            <li><a href="{% url 'post_new' %}" class="nav-link hover:text-white font-medium">New Post</a></li>
                         {% endif %}
                         <li>
                             <form method="post" action="{% url 'logout' %}" class="inline">
                                 {% csrf_token %}
-                                <button type="submit" class="hover:underline bg-transparent border-none p-0 text-white cursor-pointer">Logout</button>
+                                <button type="submit" class="nav-link bg-transparent border-none p-0 text-white cursor-pointer font-medium">Logout</button>
                             </form>
                         </li>
                     {% else %}
-                        <li><a href="{% url 'login' %}" class="hover:underline">Login</a></li>
-                        <li><a href="{% url 'signup' %}" class="hover:underline">Sign Up</a></li>
+                        <li><a href="{% url 'login' %}" class="nav-link hover:text-white font-medium">Login</a></li>
+                        <li><a href="{% url 'signup' %}" class="px-4 py-2 bg-white text-primary-dark rounded-full hover:bg-gray-100 transition-colors duration-300 font-medium">Sign Up</a></li>
                     {% endif %}
                 </ul>
             </nav>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8">
+    <main class="container mx-auto px-4 py-8 flex-grow animate-slide-in">
         {% if messages %}
-            <div class="mb-4">
+            <div class="mb-6">
                 {% for message in messages %}
-                    <div class="p-4 {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %} rounded">
+                    <div class="p-4 rounded-lg shadow-md animate__animated animate__fadeIn {% if message.tags == 'error' %}bg-red-100 text-red-700 border-l-4 border-red-500{% else %}bg-green-100 text-green-700 border-l-4 border-green-500{% endif %}">
                         {{ message }}
                     </div>
                 {% endfor %}
@@ -117,9 +185,19 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-gray-800 text-white py-6">
-        <div class="container mx-auto px-4 text-center">
-            <p>&copy; {% now "Y" %} The Daily Attack. All rights reserved.</p>
+    <footer class="bg-footer-gradient text-white py-8 shadow-inner">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-lg font-semibold">&copy; {% now "Y" %} The Daily Attack</p>
+                    <p class="text-sm text-gray-300">All rights reserved</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="{% url 'api_docs' %}" class="text-white hover:text-gray-300 transition-colors duration-300">API Docs</a>
+                    <a href="#" class="text-white hover:text-gray-300 transition-colors duration-300">Privacy Policy</a>
+                    <a href="#" class="text-white hover:text-gray-300 transition-colors duration-300">Terms of Service</a>
+                </div>
+            </div>
         </div>
     </footer>
     <!-- Add this just before the closing </body> tag -->

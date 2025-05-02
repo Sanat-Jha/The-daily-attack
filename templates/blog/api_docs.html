@@ -3,31 +3,33 @@
 {% block title %}API Documentation - The Daily Attack{% endblock %}
 
 {% block content %}
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <h1 class="text-2xl font-bold mb-6">API Documentation</h1>
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 animate-fade-in">
+        <h1 class="text-2xl font-bold mb-8 text-primary-dark flex items-center">
+            <span class="mr-2">📚</span> API Documentation
+        </h1>
         
         <div class="prose max-w-none">
-            <h2>Introduction</h2>
-            <p>
+            <h2 class="text-xl text-primary-dark font-semibold mt-0 mb-4 pb-2 border-b border-gray-200">Introduction</h2>
+            <p class="text-gray-700">
                 The Daily Attack API provides programmatic access to blog posts and allows authorized users to create new posts.
                 This documentation describes the available endpoints and how to use them.
             </p>
             
-            <h2>Authentication</h2>
-            <p>
+            <h2 class="text-xl text-primary-dark font-semibold mt-8 mb-4 pb-2 border-b border-gray-200">Authentication</h2>
+            <p class="text-gray-700">
                 Some endpoints require authentication using an API key. To authenticate, include your API key in the request headers:
             </p>
-            <pre class="bg-gray-100 p-3 rounded"><code>X-API-Key: your-api-key</code></pre>
+            <pre class="bg-gradient-to-r from-gray-100 to-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm"><code class="text-gray-800">X-API-Key: your-api-key</code></pre>
             
-            <h2>Endpoints</h2>
+            <h2 class="text-xl text-primary-dark font-semibold mt-8 mb-4 pb-2 border-b border-gray-200">Endpoints</h2>
             
-            <h3>List All Posts</h3>
-            <p><strong>URL:</strong> <code>/api/posts/</code></p>
-            <p><strong>Method:</strong> GET</p>
-            <p><strong>Authentication:</strong> None (public endpoint)</p>
-            <p><strong>Description:</strong> Returns a list of all published posts.</p>
-            <p><strong>Example Response:</strong></p>
-            <pre class="bg-gray-100 p-3 rounded"><code>[
+            <div class="mt-6 p-6 bg-gradient-to-r from-primary-light/5 to-accent-light/5 rounded-lg border border-gray-200 mb-6 card-hover">
+                <h3 class="text-lg text-primary-dark font-semibold mt-0 mb-3">List All Posts</h3>
+                <p class="mb-2"><strong class="text-gray-700">URL:</strong> <code class="bg-white px-2 py-1 rounded text-primary-dark">GET /api/posts/</code></p>
+                <p class="mb-2"><strong class="text-gray-700">Authentication:</strong> None (public endpoint)</p>
+                <p class="mb-2"><strong class="text-gray-700">Description:</strong> Returns a list of all published posts.</p>
+                <p class="mb-2"><strong class="text-gray-700">Example Response:</strong></p>
+                <pre class="bg-gradient-to-r from-gray-100 to-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm"><code class="text-gray-800">[
   {
     "id": 1,
     "title": "Sample Post",
@@ -42,14 +44,15 @@
     ]
   }
 ]</code></pre>
+            </div>
             
-            <h3>Get a Specific Post</h3>
-            <p><strong>URL:</strong> <code>/api/posts/{id}/</code></p>
-            <p><strong>Method:</strong> GET</p>
-            <p><strong>Authentication:</strong> None (public endpoint)</p>
-            <p><strong>Description:</strong> Returns details of a specific published post.</p>
-            <p><strong>Example Response:</strong></p>
-            <pre class="bg-gray-100 p-3 rounded"><code>{
+            <div class="mt-6 p-6 bg-gradient-to-r from-primary-light/5 to-accent-light/5 rounded-lg border border-gray-200 mb-6 card-hover">
+                <h3 class="text-lg text-primary-dark font-semibold mt-0 mb-3">Get a Specific Post</h3>
+                <p class="mb-2"><strong class="text-gray-700">URL:</strong> <code class="bg-white px-2 py-1 rounded text-primary-dark">GET /api/posts/{id}/</code></p>
+                <p class="mb-2"><strong class="text-gray-700">Authentication:</strong> None (public endpoint)</p>
+                <p class="mb-2"><strong class="text-gray-700">Description:</strong> Returns details of a specific published post.</p>
+                <p class="mb-2"><strong class="text-gray-700">Example Response:</strong></p>
+                <pre class="bg-gradient-to-r from-gray-100 to-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm"><code class="text-gray-800">{
   "id": 1,
   "title": "Sample Post",
   "content": "This is a sample post content.",
@@ -62,21 +65,22 @@
     {"name": "example"}
   ]
 }</code></pre>
+            </div>
             
-            <h3>Create a New Post</h3>
-            <p><strong>URL:</strong> <code>/api/posts/create/</code></p>
-            <p><strong>Method:</strong> POST</p>
-            <p><strong>Authentication:</strong> Required (API Key)</p>
-            <p><strong>Description:</strong> Creates a new blog post.</p>
-            <p><strong>Request Body:</strong></p>
-            <pre class="bg-gray-100 p-3 rounded"><code>{
+            <div class="mt-6 p-6 bg-gradient-to-r from-primary-light/5 to-accent-light/5 rounded-lg border border-gray-200 mb-6 card-hover">
+                <h3 class="text-lg text-primary-dark font-semibold mt-0 mb-3">Create a New Post</h3>
+                <p class="mb-2"><strong class="text-gray-700">URL:</strong> <code class="bg-white px-2 py-1 rounded text-primary-dark">POST /api/posts/create/</code></p>
+                <p class="mb-2"><strong class="text-gray-700">Authentication:</strong> Required (API Key)</p>
+                <p class="mb-2"><strong class="text-gray-700">Description:</strong> Creates a new blog post.</p>
+                <p class="mb-2"><strong class="text-gray-700">Request Body:</strong></p>
+                <pre class="bg-gradient-to-r from-gray-100 to-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm"><code class="text-gray-800">{
   "title": "New Post Title",
   "content": "Content of the new post",
   "status": "draft", // or "published"
   "tags": ["tag1", "tag2"]
 }</code></pre>
-            <p><strong>Example Response:</strong></p>
-            <pre class="bg-gray-100 p-3 rounded"><code>{
+                <p class="mb-2"><strong class="text-gray-700">Example Response:</strong></p>
+                <pre class="bg-gradient-to-r from-gray-100 to-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm"><code class="text-gray-800">{
   "id": 2,
   "title": "New Post Title",
   "content": "Content of the new post",
@@ -89,18 +93,19 @@
     {"name": "tag2"}
   ]
 }</code></pre>
+            </div>
             
-            <h2>Error Handling</h2>
-            <p>
+            <h2 class="text-xl text-primary-dark font-semibold mt-8 mb-4 pb-2 border-b border-gray-200">Error Handling</h2>
+            <p class="text-gray-700">
                 The API uses standard HTTP status codes to indicate the success or failure of a request:
             </p>
-            <ul>
-                <li><strong>200 OK:</strong> The request was successful.</li>
-                <li><strong>201 Created:</strong> The resource was successfully created.</li>
-                <li><strong>400 Bad Request:</strong> The request was invalid or cannot be served.</li>
-                <li><strong>401 Unauthorized:</strong> Authentication is required or failed.</li>
-                <li><strong>404 Not Found:</strong> The requested resource does not exist.</li>
-                <li><strong>500 Internal Server Error:</strong> An error occurred on the server.</li>
+            <ul class="bg-gradient-to-r from-gray-100 to-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm">
+                <li class="mb-2"><strong class="text-green-600">200 OK:</strong> The request was successful.</li>
+                <li class="mb-2"><strong class="text-green-600">201 Created:</strong> The resource was successfully created.</li>
+                <li class="mb-2"><strong class="text-yellow-600">400 Bad Request:</strong> The request was invalid or cannot be served.</li>
+                <li class="mb-2"><strong class="text-yellow-600">401 Unauthorized:</strong> Authentication is required or failed.</li>
+                <li class="mb-2"><strong class="text-yellow-600">404 Not Found:</strong> The requested resource does not exist.</li>
+                <li class="mb-2"><strong class="text-red-600">500 Internal Server Error:</strong> An error occurred on the server.</li>
             </ul>
         </div>
     </div>

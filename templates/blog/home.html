@@ -3,47 +3,50 @@
 {% block title %}The Daily Attack - Home{% endblock %}
 
 {% block content %}
-    <div class="mb-6">
-        <h1 class="text-3xl font-bold mb-4">Latest Posts</h1>
+    <div class="mb-8 animate-fade-in">
+        <h1 class="text-3xl font-bold mb-6 text-primary-dark">Latest Posts</h1>
         
-        <form action="{% url 'search_posts' %}" method="get" class="mb-6">
-            <div class="flex">
-                <input type="text" name="q" placeholder="Search posts..." class="flex-grow px-4 py-2 border rounded-l" value="{{ query|default:'' }}">
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-r">Search</button>
+        <form action="{% url 'search_posts' %}" method="get" class="mb-8">
+            <div class="flex shadow-md rounded-full overflow-hidden transition-all duration-300 hover:shadow-lg">
+                <input type="text" name="q" placeholder="Search posts..." class="flex-grow px-6 py-3 border-0 focus:ring-2 focus:ring-primary focus:outline-none" value="{{ query|default:'' }}">
+                <button type="submit" class="bg-header-gradient text-white px-6 py-3 font-medium transition-all duration-300 hover:opacity-90">Search</button>
             </div>
         </form>
         
         {% if tag %}
-            <div class="mb-4">
-                <p class="text-lg">Posts tagged with: <span class="font-semibold">{{ tag.name }}</span></p>
+            <div class="mb-6 p-4 bg-gradient-to-r from-primary-light/10 to-accent-light/10 rounded-lg border-l-4 border-primary">
+                <p class="text-lg">Posts tagged with: <span class="font-semibold text-primary-dark">{{ tag.name }}</span></p>
             </div>
         {% endif %}
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for post in posts %}
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover animate-slide-in" style="animation-delay: {{ forloop.counter0 }}00ms">
                 <div class="p-6">
-                    <h2 class="text-xl font-bold mb-2">
-                        <a href="{% url 'post_detail' pk=post.pk %}" class="text-blue-600 hover:underline">{{ post.title }}</a>
+                    <h2 class="text-xl font-bold mb-3">
+                        <a href="{% url 'post_detail' pk=post.pk %}" class="text-primary-dark hover:text-primary transition-colors duration-300">{{ post.title }}</a>
                     </h2>
-                    <p class="text-gray-600 mb-4">
-                        By {{ post.author.username }} on {{ post.published_at|date:"F j, Y" }}
+                    <p class="text-gray-600 mb-4 flex items-center">
+                        <span class="mr-2">👤</span> {{ post.author.username }} 
+                        <span class="mx-2">•</span>
+                        <span class="flex items-center"><span class="mr-2">📅</span> {{ post.published_at|date:"F j, Y" }}</span>
                     </p>
-                    <div class="prose mb-4">
+                    <div class="prose mb-4 text-gray-700">
                         {{ post.content|safe|truncatewords_html:30 }}
                     </div>
                     <div class="flex flex-wrap gap-2 mb-4">
                         {% for tag in post.tags.all %}
-                            <a href="{% url 'tag_posts' tag_name=tag.name %}" class="bg-gray-200 px-2 py-1 rounded text-sm hover:bg-gray-300">{{ tag.name }}</a>
+                            <a href="{% url 'tag_posts' tag_name=tag.name %}" class="bg-gradient-to-r from-primary-light/20 to-accent-light/20 px-3 py-1 rounded-full text-sm hover:from-primary-light/30 hover:to-accent-light/30 transition-all duration-300">{{ tag.name }}</a>
                         {% endfor %}
                     </div>
-                    <a href="{% url 'post_detail' pk=post.pk %}" class="text-blue-600 hover:underline">Read more</a>
+                    <a href="{% url 'post_detail' pk=post.pk %}" class="inline-block mt-2 px-4 py-2 bg-primary text-white rounded-full hover:bg-primary-dark transition-colors duration-300 text-sm font-medium">Read more</a>
                 </div>
             </div>
         {% empty %}
-            <div class="col-span-full text-center py-8">
+            <div class="col-span-full text-center py-12 animate-fade-in">
                 <p class="text-xl text-gray-600">No posts found.</p>
+                <p class="mt-2 text-gray-500">Try adjusting your search or check back later.</p>
             </div>
         {% endfor %}
     </div>

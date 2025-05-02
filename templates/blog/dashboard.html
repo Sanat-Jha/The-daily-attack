@@ -3,63 +3,69 @@
 {% block title %}Dashboard - The Daily Attack{% endblock %}
 
 {% block content %}
-    <div class="max-w-4xl mx-auto">
-        <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+    <div class="max-w-4xl mx-auto animate-fade-in">
+        <h1 class="text-2xl font-bold mb-8 text-primary-dark">Dashboard</h1>
         
         {% if user.profile.user_type == 'editor' %}
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h2 class="text-xl font-bold mb-4">Your API Key</h2>
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8 card-hover">
+                <h2 class="text-xl font-bold mb-4 text-primary-dark flex items-center">
+                    <span class="mr-2">🔑</span> Your API Key
+                </h2>
                 {% if user.api_key %}
-                    <div class="bg-gray-100 p-3 rounded mb-3 font-mono text-sm break-all">
+                    <div class="bg-gradient-to-r from-gray-100 to-gray-50 p-4 rounded-lg mb-4 font-mono text-sm break-all border border-gray-200">
                         {{ user.api_key.key }}
                     </div>
                     <p class="text-sm text-gray-600 mb-4">
                         Use this API key to authenticate your requests to the API. Keep it secret!
                     </p>
-                    <div class="flex gap-2">
+                    <div class="flex flex-wrap gap-3">
                         <form method="post">
                             {% csrf_token %}
-                            <button type="submit" name="generate_api_key" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
-                                Regenerate API Key
+                            <button type="submit" name="generate_api_key" class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-5 py-2 rounded-full hover:opacity-90 transition-all duration-300 shadow-sm">
+                                <span class="mr-1">🔄</span> Regenerate API Key
                             </button>
                         </form>
-                        <a href="{% url 'api_docs' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            View API Documentation
+                        <a href="{% url 'api_docs' %}" class="bg-gradient-to-r from-primary to-accent text-white px-5 py-2 rounded-full hover:opacity-90 transition-all duration-300 shadow-sm">
+                            <span class="mr-1">📚</span> View API Documentation
                         </a>
                     </div>
                 {% else %}
                     <p class="mb-4">You don't have an API key yet. Generate one to use the API.</p>
                     <form method="post">
                         {% csrf_token %}
-                        <button type="submit" name="generate_api_key" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            Generate API Key
+                        <button type="submit" name="generate_api_key" class="bg-gradient-to-r from-primary to-accent text-white px-5 py-2 rounded-full hover:opacity-90 transition-all duration-300 shadow-sm">
+                            <span class="mr-1">🔑</span> Generate API Key
                         </button>
                     </form>
                 {% endif %}
             </div>
             
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h2 class="text-xl font-bold mb-4">Your Posts</h2>
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6 card-hover animate-slide-in" style="animation-delay: 100ms">
+                <h2 class="text-xl font-bold mb-6 text-primary-dark flex items-center">
+                    <span class="mr-2">📝</span> Your Posts
+                </h2>
                 
                 {% if user_posts %}
-                    <div class="space-y-4">
+                    <div class="space-y-6">
                         {% for post in user_posts %}
-                            <div class="border-b pb-4">
+                            <div class="border-b border-gray-200 pb-6 hover:bg-gray-50 p-4 -mx-4 rounded-lg transition-colors duration-300">
                                 <h3 class="text-lg font-semibold">
-                                    <a href="{% url 'post_detail' pk=post.pk %}" class="text-blue-600 hover:underline">{{ post.title }}</a>
+                                    <a href="{% url 'post_detail' pk=post.pk %}" class="text-primary hover:text-primary-dark transition-colors duration-300">{{ post.title }}</a>
                                 </h3>
-                                <div class="flex justify-between items-center text-sm text-gray-600">
-                                    <span>
+                                <div class="flex flex-wrap justify-between items-center text-sm text-gray-600 mt-2">
+                                    <span class="flex items-center">
                                         {% if post.status == 'published' %}
+                                            <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                                             Published on {{ post.published_at|date:"F j, Y" }}
                                         {% else %}
+                                            <span class="inline-block w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
                                             Draft (Created on {{ post.created_at|date:"F j, Y" }})
                                         {% endif %}
                                     </span>
-                                    <div class="space-x-2">
-                                        <a href="{% url 'post_edit' pk=post.pk %}" class="text-blue-600 hover:underline">Edit</a>
+                                    <div class="space-x-3 mt-2 sm:mt-0">
+                                        <a href="{% url 'post_edit' pk=post.pk %}" class="text-primary hover:text-primary-dark transition-colors duration-300">Edit</a>
                                         {% if post.status == 'draft' %}
-                                            <a href="{% url 'post_publish' pk=post.pk %}" class="text-green-600 hover:underline">Publish</a>
+                                            <a href="{% url 'post_publish' pk=post.pk %}" class="text-green-600 hover:text-green-700 transition-colors duration-300">Publish</a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -67,32 +73,42 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p>You haven't created any posts yet.</p>
+                    <div class="text-center py-8 bg-gray-50 rounded-lg">
+                        <p class="text-gray-600 mb-4">You haven't created any posts yet.</p>
+                    </div>
                 {% endif %}
                 
-                <div class="mt-4">
-                    <a href="{% url 'post_new' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Create New Post</a>
+                <div class="mt-6">
+                    <a href="{% url 'post_new' %}" class="inline-flex items-center bg-gradient-to-r from-primary to-accent text-white px-5 py-2 rounded-full hover:opacity-90 transition-all duration-300 shadow-sm">
+                        <span class="mr-2">✨</span> Create New Post
+                    </a>
                 </div>
             </div>
         {% else %}
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-xl font-bold mb-4">Recent Posts</h2>
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover animate-slide-in">
+                <h2 class="text-xl font-bold mb-6 text-primary-dark flex items-center">
+                    <span class="mr-2">📰</span> Recent Posts
+                </h2>
                 
                 {% if recent_posts %}
-                    <div class="space-y-4">
+                    <div class="space-y-6">
                         {% for post in recent_posts %}
-                            <div class="border-b pb-4">
+                            <div class="border-b border-gray-200 pb-6 hover:bg-gray-50 p-4 -mx-4 rounded-lg transition-colors duration-300">
                                 <h3 class="text-lg font-semibold">
-                                    <a href="{% url 'post_detail' pk=post.pk %}" class="text-blue-600 hover:underline">{{ post.title }}</a>
+                                    <a href="{% url 'post_detail' pk=post.pk %}" class="text-primary hover:text-primary-dark transition-colors duration-300">{{ post.title }}</a>
                                 </h3>
-                                <p class="text-sm text-gray-600">
-                                    Published on {{ post.published_at|date:"F j, Y" }} by {{ post.author.username }}
+                                <p class="text-sm text-gray-600 mt-2 flex items-center">
+                                    <span class="mr-2">📅</span> {{ post.published_at|date:"F j, Y" }} 
+                                    <span class="mx-2">•</span>
+                                    <span>👤 {{ post.author.username }}</span>
                                 </p>
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p>No posts available.</p>
+                    <div class="text-center py-8 bg-gray-50 rounded-lg">
+                        <p class="text-gray-600">No posts available.</p>
+                    </div>
                 {% endif %}
             </div>
         {% endif %}

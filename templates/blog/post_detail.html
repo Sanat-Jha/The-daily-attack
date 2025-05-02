@@ -3,34 +3,39 @@
 {% block title %}{{ post.title }} - The Daily Attack{% endblock %}
 
 {% block content %}
-    <article class="bg-white rounded-lg shadow-md p-6">
-        <header class="mb-6">
-            <h1 class="text-3xl font-bold mb-2">{{ post.title }}</h1>
-            <div class="text-gray-600 mb-4">
-                By {{ post.author.username }} on {{ post.published_at|date:"F j, Y" }}
+    <article class="bg-white rounded-lg shadow-lg p-8 animate-fade-in">
+        <header class="mb-8 border-b border-gray-200 pb-6">
+            <h1 class="text-3xl font-bold mb-4 text-primary-dark">{{ post.title }}</h1>
+            <div class="text-gray-600 mb-4 flex flex-wrap items-center">
+                <span class="flex items-center mr-4"><span class="mr-2">👤</span> {{ post.author.username }}</span>
+                <span class="flex items-center"><span class="mr-2">📅</span> {{ post.published_at|date:"F j, Y" }}</span>
             </div>
             <div class="flex flex-wrap gap-2">
                 {% for tag in post.tags.all %}
-                    <a href="{% url 'tag_posts' tag_name=tag.name %}" class="bg-gray-200 px-2 py-1 rounded text-sm hover:bg-gray-300">{{ tag.name }}</a>
+                    <a href="{% url 'tag_posts' tag_name=tag.name %}" class="bg-gradient-to-r from-primary-light/20 to-accent-light/20 px-3 py-1 rounded-full text-sm hover:from-primary-light/30 hover:to-accent-light/30 transition-all duration-300">{{ tag.name }}</a>
                 {% endfor %}
             </div>
         </header>
 
-        <div class="prose max-w-none mb-6">
+        <div class="prose max-w-none mb-8 text-gray-800 animate-slide-in">
             {{ post.content|safe }}
         </div>
 
         {% if user.is_authenticated and user.profile.user_type == 'editor' and user == post.author %}
-            <div class="flex gap-2 mt-6">
-                <a href="{% url 'post_edit' pk=post.pk %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Edit Post</a>
+            <div class="flex flex-wrap gap-3 mt-8 pt-6 border-t border-gray-200">
+                <a href="{% url 'post_edit' pk=post.pk %}" class="bg-primary text-white px-5 py-2 rounded-full hover:bg-primary-dark transition-colors duration-300 flex items-center">
+                    <span class="mr-2">✏️</span> Edit Post
+                </a>
                 {% if post.status == 'draft' %}
-                    <a href="{% url 'post_publish' pk=post.pk %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Publish</a>
+                    <a href="{% url 'post_publish' pk=post.pk %}" class="bg-green-600 text-white px-5 py-2 rounded-full hover:bg-green-700 transition-colors duration-300 flex items-center">
+                        <span class="mr-2">📢</span> Publish
+                    </a>
                 {% endif %}
                 {% if post.status == 'published' %}
                     <a href="https://www.linkedin.com/post/new" target="_blank" 
-                       onclick="localStorage.setItem('linkedinPostContent', '{{ post.title }}\n\n{{ post.content|striptags|escapejs }}');"
-                       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                        Share to LinkedIn
+                       onclick="localStorage.setItem('shareToLinkedIn', 'true'); localStorage.setItem('linkedinPostContent', '{{ post.title }}\n\n{{ post.content|striptags|escapejs }}');"
+                       class="bg-blue-500 text-white px-5 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300 flex items-center">
+                        <span class="mr-2">🔗</span> Share to LinkedIn
                     </a>
                 {% endif %}
             </div>
@@ -46,7 +51,6 @@
                     linkedinBtn.addEventListener('click', function() {
                         // This will be executed when the LinkedIn button is clicked
                         // The content is already set in localStorage via the onclick attribute
-                        // We could add additional functionality here if needed
                     });
                 }
             });
