@@ -24,14 +24,35 @@
             <div class="animate-slide-in" style="animation-delay: 100ms">
                 <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
                 {{ form.title.errors }}
-                <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" value="{{ form.title.value|default:'' }}" 
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300" required>
+                <div class="flex space-x-2">
+                    <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" value="{{ form.title.value|default:'' }}" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300" required>
+                    <button type="button" id="generate-title-btn" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors duration-300">
+                        <span class="flex items-center"><span class="mr-1">✨</span> Generate</span>
+                    </button>
+                </div>
             </div>
             
             <div class="animate-slide-in" style="animation-delay: 200ms">
                 <label for="{{ form.content.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Content</label>
                 {{ form.content.errors }}
+                <div class="mb-2 flex justify-end">
+                    <button type="button" id="generate-content-btn" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors duration-300">
+                        <span class="flex items-center"><span class="mr-1">✨</span> Get Content Suggestions</span>
+                    </button>
+                </div>
                 <textarea name="{{ form.content.name }}" id="{{ form.content.id_for_label }}" class="richtext-editor w-full px-4 py-3 border border-gray-300 rounded-lg" rows="12">{{ form.content.value|default:'' }}</textarea>
+            </div>
+            
+            <!-- AI Suggestions Container -->
+            <div id="ai-suggestions" class="hidden animate-slide-in bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-medium text-primary-dark">AI Suggestions</h3>
+                    <button type="button" id="close-suggestions" class="text-gray-500 hover:text-gray-700">
+                        <span class="text-xl">×</span>
+                    </button>
+                </div>
+                <div id="suggestions-content" class="prose max-w-none"></div>
             </div>
             
             <div class="animate-slide-in" style="animation-delay: 300ms">
@@ -77,7 +98,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('post-form');
             const shareToLinkedIn = document.getElementById('share-to-linkedin');
+            const generateTitleBtn = document.getElementById('generate-title-btn');
+            const generateContentBtn = document.getElementById('generate-content-btn');
+            const aiSuggestions = document.getElementById('ai-suggestions');
+            const suggestionsContent = document.getElementById('suggestions-content');
+            const closeSuggestions = document.getElementById('close-suggestions');
             
+            // LinkedIn sharing functionality
             form.addEventListener('submit', function(e) {
                 // Store the LinkedIn sharing preference in localStorage
                 if (shareToLinkedIn.checked) {
@@ -92,6 +119,117 @@
                 } else {
                     localStorage.removeItem('shareToLinkedIn');
                 }
+            });
+            
+            // Close suggestions panel
+            closeSuggestions.addEventListener('click', function() {
+                aiSuggestions.classList.add('hidden');
+            });
+            
+            // Generate title suggestions
+            generateTitleBtn.addEventListener('click', function() {
+                const content = tinymce.get('{{ form.content.id_for_label }}').getContent();
+                if (!content) {
+                    alert('Please add some content first to generate title suggestions.');
+                    return;
+                }
+                
+                generateTitleBtn.disabled = true;
+                generateTitleBtn.innerHTML = '<span class="flex items-center"><span class="mr-1">⏳</span> Generating...</span>';
+                
+                fetch('/api/title-suggestions/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        content: content
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    generateTitleBtn.disabled = false;
+                    generateTitleBtn.innerHTML = '<span class="flex items-center"><span class="mr-1">✨</span> Generate</span>';
+                    
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+                    
+                    suggestionsContent.innerHTML = data.suggestions;
+                    aiSuggestions.classList.remove('hidden');
+                    
+                    // Add click event to title suggestions
+                    const titleLinks = suggestionsContent.querySelectorAll('li');
+                    titleLinks.forEach(link => {
+                        link.style.cursor = 'pointer';
+                        link.addEventListener('click', function() {
+                            document.getElementById('{{ form.title.id_for_label }}').value = this.textContent.trim();
+                            aiSuggestions.classList.add('hidden');
+                        });
+                    });
+                })
+                .catch(error => {
+                    generateTitleBtn.disabled = false;
+                    generateTitleBtn.innerHTML = '<span class="flex items-center"><span class="mr-1">✨</span> Generate</span>';
+                    alert('Error: ' + error);
+                });
+            });
+            
+            // Generate content suggestions
+            generateContentBtn.addEventListener('click', function() {
+                const title = document.getElementById('{{ form.title.id_for_label }}').value;
+                const content = tinymce.get('{{ form.content.id_for_label }}').getContent();
+                
+                if (!title) {
+                    alert('Please add a title first to generate content suggestions.');
+                    return;
+                }
+                
+                generateContentBtn.disabled = true;
+                generateContentBtn.innerHTML = '<span class="flex items-center"><span class="mr-1">⏳</span> Generating...</span>';
+                
+                fetch('/api/content-suggestions/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        content: content
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    generateContentBtn.disabled = false;
+                    generateContentBtn.innerHTML = '<span class="flex items-center"><span class="mr-1">✨</span> Get Content Suggestions</span>';
+                    
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+                    
+                    suggestionsContent.innerHTML = data.suggestions;
+                    aiSuggestions.classList.remove('hidden');
+                    
+                    // Add click event to insert content blocks
+                    const contentBlocks = suggestionsContent.querySelectorAll('p, li');
+                    contentBlocks.forEach(block => {
+                        block.style.cursor = 'pointer';
+                        block.title = 'Click to insert this content';
+                        block.addEventListener('click', function() {
+                            const editor = tinymce.get('{{ form.content.id_for_label }}');
+                            editor.execCommand('mceInsertContent', false, '<p>' + this.innerHTML + '</p>');
+                        });
+                    });
+                })
+                .catch(error => {
+                    generateContentBtn.disabled = false;
+                    generateContentBtn.innerHTML = '<span class="flex items-center"><span class="mr-1">✨</span> Get Content Suggestions</span>';
+                    alert('Error: ' + error);
+                });
             });
         });
     </script>

@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 @csrf_protect
 @require_POST
 def api_title_suggestions(request):
+    print(1)
     try:
         data = json.loads(request.body)
         content = data.get('content', '')
@@ -28,9 +29,11 @@ def api_title_suggestions(request):
 @csrf_protect
 @require_POST
 def api_content_suggestions(request):
+    print(2)
     try:
         data = json.loads(request.body)
         content = data.get('content', '')
+        print(content)
         
         if not content:
             return JsonResponse({'error': 'Content is required'}, status=400)
